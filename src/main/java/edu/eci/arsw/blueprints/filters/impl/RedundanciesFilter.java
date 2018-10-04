@@ -1,22 +1,21 @@
 package edu.eci.arsw.blueprints.filters.impl;
 
+import edu.eci.arsw.blueprints.filters.BlueprintFilter;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedundanciesFilter {
+public class RedundanciesFilter implements BlueprintFilter{
 
-    private Blueprint blueprint;
-    private List<Point> points;
+	private List<Point> points;
 
-    public RedundanciesFilter(Blueprint blueprint) {
-        this.blueprint = blueprint;
+    public RedundanciesFilter() {
         points = new ArrayList<>();
     }
 
-    public Blueprint filter() {
+    public Blueprint filter(Blueprint blueprint) {
         List<Point> blueprintPoints = blueprint.getPoints();
         for(int i = 0; i < (blueprintPoints.size() - 1);i++) {
             if((blueprintPoints.get(i).getX() != blueprintPoints.get(i+1).getX()) || (blueprintPoints.get(i).getY() != blueprintPoints.get(i+1).getY())) {
@@ -29,7 +28,8 @@ public class RedundanciesFilter {
 
             }
         }
-        Object[] ps = blueprintPoints.toArray();
+        Point[] ps = points.toArray(new Point[points.size()]);
         Blueprint bp = new Blueprint(blueprint.getAuthor(),blueprint.getName(),ps);
+        return bp;
     }
 }

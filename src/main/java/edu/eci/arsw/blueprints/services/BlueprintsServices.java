@@ -5,10 +5,13 @@
  */
 package edu.eci.arsw.blueprints.services;
 
+import edu.eci.arsw.blueprints.filters.BlueprintFilter;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
+
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +25,30 @@ public class BlueprintsServices {
 
     @Autowired
     BlueprintsPersistence bpp=null;
+    
+    @Autowired
+    BlueprintFilter bpf = null;
 
+    /**
+     * Adds a new blueprint.
+     * @param bp The blueprint that is going to be added.
+     * @throws BlueprintPersistenceException
+     */
     public void addNewBlueprint(Blueprint bp) throws BlueprintPersistenceException {
         bpp.saveBlueprint(bp);
     }
 
+    /**
+     * Gets all the existing blueprints.
+     * @return All the existing blueprints.
+     * @throws BlueprintNotFoundException
+     */
     public Set<Blueprint> getAllBlueprints() throws BlueprintNotFoundException {
-        return bpp.getAllBlueprints();
+    	Set<Blueprint> blueprints = new LinkedHashSet<>();
+    	for(Blueprint bp : bpp.getAllBlueprints()) {
+    		blueprints.add(bpf.filter(bp));
+    	}
+        return blueprints;
     }
 
     /**
@@ -39,8 +59,7 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
     public Blueprint getBlueprint(String author,String name) throws BlueprintNotFoundException {
-        return bpp.getBlueprint(author,name);
-//        throw new UnsupportedOperationException("Not supported yet.");
+        return bpf.filter(bpp.getBlueprint(author,name));
     }
 
     /**
@@ -50,8 +69,11 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
-        return bpp.getBlueprintsByAuthor(author);
-//        throw new UnsupportedOperationException("Not supported yet.");
+    	Set<Blueprint> blueprints = new LinkedHashSet<>();
+    	for(Blueprint bp : bpp.getBlueprintsByAuthor(author)) {
+    		blueprints.add(bpf.filter(bp));
+    	}
+        return blueprints;
     }
 
 }
