@@ -6,7 +6,9 @@ import java.util.List;
 import edu.eci.arsw.blueprints.filters.BlueprintFilter;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
+import org.springframework.stereotype.Service;
 
+//@Service
 public class SubsamplingFilter implements BlueprintFilter{
 	
 	private List<Point> points;
